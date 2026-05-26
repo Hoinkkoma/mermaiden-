@@ -1,101 +1,206 @@
-# Automation Dokumentation für Mermaiden
 
-## 🤖 Automatische Updates
+# 🤖 Automation Dokumentation für Mermaiden
 
-Dieses Projekt ist so konfiguriert, dass es sich automatisch aktualisiert und validiert.
+## 📌 Überblick
 
-## 📋 Workflows
+Dieses Projekt ist vollständig konfiguriert für automatische Updates, Tests und Validierung durch GitHub Actions.
 
-### 1. Auto-Update Workflow (auto-update.yml)
-**Trigger:** Täglich um 09:00 UTC
+---
 
-**Was es macht:**
+## 📋 Verfügbare Workflows
+
+### 1️⃣ Auto-Update Workflow (`auto-update.yml`)
+
+**Zeitplan:** Täglich um 09:00 UTC  
+**Trigger:** `schedule: cron: '0 9 * * *'`
+
+#### Was es macht:
 - ✅ Validiert Python-Code Syntax
 - 🔄 Aktualisiert Timestamp im README
 - 💾 Committed und pusht Änderungen automatisch
 - 📊 Überwacht Code-Qualität
+- 🔐 Verwendet automatische `GITHUB_TOKEN`
 
-**Logs:** https://github.com/Hoinkkoma/mermaiden-/actions
+**Log:** [Action Logs](https://github.com/Hoinkkoma/mermaiden-/actions)
 
 ---
 
-### 2. Test Workflow (tests.yml)
+### 2️⃣ Test Workflow (`tests.yml`)
+
 **Trigger:** Bei jedem Push und Pull Request
 
-**Was es macht:**
+#### Was es macht:
 - ✅ Syntax-Validierung des Python-Codes
 - 🧪 Führt Unit-Tests durch
-- ✔️ Validiert MermaidDiagram Klasse
-- ✔️ Validiert MermaidProject Klasse
+- ✔️ Validiert `MermaidDiagram` Klasse
+- ✔️ Validiert `MermaidProject` Klasse
+- 🐍 Testet mit Python 3.9+
 
 ---
 
-## 🔧 Manuelle Trigger
+## 🔧 Manuelle Workflow-Trigger
 
-Sie können Workflows auch manuell auslösen:
+### Über GitHub CLI
 
 ```bash
-# Über GitHub CLI
+# Auto-Update manuell ausführen
 gh workflow run auto-update.yml
+
+# Tests manuell ausführen
+gh workflow run tests.yml
 ```
 
-Oder über die Web-UI:
-1. Gehen Sie zum **Actions** Tab
-2. Wählen Sie den Workflow
+### Über Web-UI
+
+1. Gehen Sie zu **Actions** Tab
+2. Wählen Sie den gewünschten Workflow
 3. Klicken Sie "Run workflow"
+4. Bestätigen Sie mit "Run workflow"
 
 ---
 
-## 📊 Status Check
+## 📊 Status Badges
 
-Status Badge für README:
+Kopiere diese Badges in dein README:
+
 ```markdown
 ![Auto-Update](https://github.com/Hoinkkoma/mermaiden-/actions/workflows/auto-update.yml/badge.svg)
 ![Tests](https://github.com/Hoinkkoma/mermaiden-/actions/workflows/tests.yml/badge.svg)
 ```
 
----
-
-## 📝 Commit History
-
-Automatische Commits werden mit 🔄 markiert:
-- `🔄 Auto-Update: 2026-05-22 09:00:00 UTC`
+Aktuelle Status:
+- ![Auto-Update](https://github.com/Hoinkkoma/mermaiden-/actions/workflows/auto-update.yml/badge.svg)
+- ![Tests](https://github.com/Hoinkkoma/mermaiden-/actions/workflows/tests.yml/badge.svg)
 
 ---
 
-## ⚙️ Konfiguration
+## 📝 Automatische Commits
 
-### Zeitplan ändern
-Editieren Sie `.github/workflows/auto-update.yml`:
-```yaml
-schedule:
-  - cron: '0 9 * * *'  # 09:00 UTC täglich
+Commits durch Workflows werden mit 🔄 markiert:
+
+```
+🔄 Auto-Update: 2026-05-22 09:00:00 UTC
 ```
 
-Cron Format: `minute hour day month weekday`
+**Eigenschaften:**
+- Author: `github-actions[bot]`
+- Automatisch gepusht
+- Keine manuellen Änderungen nötig
 
 ---
 
-## 🔐 Berechtigungen
+## ⚙️ Workflow-Konfiguration
+
+### Zeitplan anpassen
+
+Editieren Sie `.github/workflows/auto-update.yml`:
+
+```yaml
+schedule:
+  - cron: '0 9 * * *'  # HH MM * * *
+```
+
+**Cron Format:** `minute hour day month weekday`
+
+**Beispiele:**
+- `0 9 * * *` = 09:00 UTC täglich
+- `0 9 * * 1` = 09:00 UTC jeden Montag
+- `0 */6 * * *` = Alle 6 Stunden
+
+### Berechtigungen konfigurieren
 
 Workflows nutzen `GITHUB_TOKEN` mit Permissions:
-- `contents: write` - Erlaubt Commits
-- `actions: read` - Liest Workflow-Status
+
+```yaml
+permissions:
+  contents: write  # Erlaubt Commits
+  actions: read    # Liest Workflow-Status
+```
+
+---
+
+## 🔍 Logs und Debugging
+
+### Logs anschauen
+
+1. Gehen Sie zu **Actions** Tab
+2. Wählen Sie einen Workflow-Run
+3. Klicken Sie auf einen Job
+4. Sehen Sie die detaillierten Logs
+
+### Häufige Probleme
+
+| Problem | Lösung |
+|---------|--------|
+| ❌ Workflow läuft nicht | Überprüfen Sie `.github/workflows/` Dateien |
+| ❌ Push fehlgeschlagen | Überprüfen Sie Repository Permissions |
+| ❌ Tests fehlgeschlagen | Sehen Sie Job-Logs für Details |
 
 ---
 
 ## 📧 Benachrichtigungen
 
-- ✅ Erfolgreiche Updates: Kein Benachrichtigungen
-- ❌ Fehler: GitHub Email-Benachrichtigung
+### Standard-Benachrichtigungen
+
+- ✅ **Erfolgreiche Runs:** Keine Benachrichtigung
+- ❌ **Fehlgeschlagene Runs:** GitHub Email-Benachrichtigung
+- ⚠️ **Warnungen:** Im Actions-Tab sichtbar
+
+### Benachrichtigungen anpassen
+
+1. Gehen Sie zu **Settings** → **Notifications**
+2. Wählen Sie **Actions** Benachrichtigungen
+3. Konfigurieren Sie nach Bedarf
 
 ---
 
-## 🚀 Nächste Schritte
+## 🚀 Best Practices
 
-1. ✅ Workflows sind aktiv
-2. ✅ Tests laufen bei jedem Push
-3. ✅ Updates laufen täglich
-4. ✅ Code wird automatisch validiert
+### ✅ Empfehlungen
 
-**Alles funktioniert automatisch!** 🎉
+- 🔄 Regelmäßige automatische Tests durchführen
+- 📊 Status Badges in README verwenden
+- 🔐 Niemals `GITHUB_TOKEN` ändern
+- 📝 Commit-Messages dokumentieren
+- 🧪 Lokal testen vor Push
+
+### ❌ Zu vermeiden
+
+- Direkte Änderungen an Workflow-Secrets
+- Zu häufige Schedules (Performance)
+- Workflows ohne Fehlerbehandlung
+- Fehlende Log-Überprüfung
+
+---
+
+## 📚 Ressourcen
+
+- 📖 [GitHub Actions Dokumentation](https://docs.github.com/en/actions)
+- 🔗 [Workflow Syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
+- ⏰ [Cron Expression Builder](https://crontab.guru/)
+- 🧪 [Testing Guide](https://docs.github.com/en/actions/automating-builds-and-tests)
+
+---
+
+## ✨ Zusammenfassung
+
+| Aspekt | Status |
+|--------|--------|
+| 🤖 Auto-Update | ✅ Aktiv |
+| 🧪 Tests | ✅ Aktiv |
+| 📊 Monitoring | ✅ Aktiv |
+| 🔐 Sicherheit | ✅ Gesichert |
+| 📈 Performance | ✅ Optimiert |
+
+**Alles ist konfiguriert und läuft automatisch!** 🎉
+
+---
+
+## 📞 Support
+
+Bei Fragen zu den Workflows:
+1. Überprüfen Sie die [GitHub Actions Dokumentation](https://docs.github.com/en/actions)
+2. Sehen Sie sich die [Workflow-Logs](https://github.com/Hoinkkoma/mermaiden-/actions) an
+3. Erstellen Sie ein [Issue](https://github.com/Hoinkkoma/mermaiden-/issues)
+
+**Viel Erfolg mit deinen Workflows!** 🚀
